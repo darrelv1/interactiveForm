@@ -11,19 +11,19 @@ function errorHandler (element){
    const parent = element.parentElement;
    parent.classList.add("not-valid")
    parent.classList.remove("valid")
-   parent.querySelector(":last-child").style.display = "block"
+   parent.lastElementChild.style.display = "block"
 }
 //Handler helper for valid input
 function validHandler (element){
    const parent = element.parentElement;
    parent.classList.remove("not-valid")
    parent.classList.add("valid")
-   parent.querySelector(":last-child").style.display = "none"
+   parent.lastElementChild.style.display = "none"
 }
 
 //decorator
 function parentDecorator(ele, handler){
-   const element = ele.parentElement
+   const element = ele.parentElement.parentElement
    if (handler === "valid"){
       validHandler(element)
    } else if (handler === "error"){
@@ -34,8 +34,6 @@ function parentDecorator(ele, handler){
 
 
 jobRoleDrop.addEventListener("change",  (Event) => {
-   console.log(Event.target.value === "other")
-
    if(Event.currentTarget.value === "other"){
       otherField.style.display = "inline"
    }
@@ -74,8 +72,7 @@ registerField.addEventListener( 'change', (e )=>{
 
    const currele = e.target
    let total = 0;
-   console.log(`current ele ${currele}`)
-
+   //Extra Credit
    temporaryFunction(currele)
 
    for (let i = 0; i < checkboxes.length ; ++i){
@@ -91,7 +88,7 @@ registerField.addEventListener( 'change', (e )=>{
 
 })
 
-
+//Extra Credit
 const temporaryFunction = (element) => {
    for (let i = 0; i < checkboxes.length ; ++i){
       const ele = checkboxes[i]
@@ -176,16 +173,30 @@ const valid_name = (name) => {return name !== "" ? true : false}
 
 //Validates email input
 function emailValidator(emails){
+
    const regEx = /^[^@]+@[^@]+\.[\w]+$/i
    const result = regEx.test(emails.value)
+   const regEx2 = /^[ ]*$/
    if (result) {
       validHandler(emails)
    } else {
-      errorHandler(emails)
+      //extra Credit
+      if(regEx2.test(emails.value) === true){
+         console.log(regEx2.test(emails.value))
+         emailDecorator(emails)
+      } else {
+         emails.nextSibling.nextSibling.textContent = "Email address must be formatted correctly"
+         errorHandler(emails)
+      }
    }
-   return result ;
-
-
+   return result
+}
+//extra Credit function facilates
+function emailDecorator (obj){
+   const parent = obj.parentElement;
+   //parent.lastElementChild.style.display = "none";
+   obj.nextSibling.nextSibling.textContent = "E-mail field cannot be left blank";
+   errorHandler(obj);
 }
 
 //Validates name input
@@ -223,6 +234,7 @@ function actRegValidator(){
    return valid
 }
 
+
 //test if CCnumber has 13-16 digits, cvv has 3 and zip has 5. then returns if it was true or not
 function creditValidator(){
    if (ccOption.selected) {
@@ -252,7 +264,6 @@ function creditValidator(){
       return (e) =>{
          const value = e.target
          const result = validator(value)
-
       }
  }
 
