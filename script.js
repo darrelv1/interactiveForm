@@ -3,8 +3,11 @@
 const otherField = document.getElementById('other-job-role')
 otherField.style.display = "none";
 
+
 const jobRoleDrop = document.querySelector("select[name='user-title']")
 
+
+//Handler Helper functions...
 
 //Handler helper for error input
 function errorHandler (element){
@@ -67,51 +70,56 @@ const registerField =document.querySelector("fieldset.activities")
 
 
 let totalobj = document.getElementById("activities-cost")
+let total = 0;
 
 registerField.addEventListener( 'change', (e )=>{
 
-   const currele = e.target
-   let total = 0;
+   const targetEle = e.target
+
    //Extra Credit
-   temporaryFunction(currele)
+   sameTimeBlock(targetEle)
 
-   for (let i = 0; i < checkboxes.length ; ++i){
-      const ele = checkboxes[i]
+   if (e.target.checked){
 
-      if (ele.checked){
+      total += parseInt(targetEle.getAttribute("data-cost"))
 
-         total += parseInt(ele.getAttribute("data-cost"));
-      }
-      totalobj.innerHTML = `total $${total}`
+   } else if(!e.target.checked){
 
+      total -= parseInt(targetEle.getAttribute("data-cost"));
    }
+   totalobj.innerHTML = `total $${total}`
 
 })
 
 //Extra Credit
-const temporaryFunction = (element) => {
+const sameTimeBlock = (triggerElement) => {
+
+   const triggerDate = triggerElement.getAttribute("data-day-and-time");
+   
    for (let i = 0; i < checkboxes.length ; ++i){
+
       const ele = checkboxes[i]
       const eleName = ele.getAttribute("name");
       const eleDate = ele.getAttribute("data-day-and-time");
-      const elementName = element.getAttribute("name");
-      const elementDate = element.getAttribute("data-day-and-time");
 
-      if (eleDate === elementDate && eleName !== elementName && element.checked ){
-         if(!ele.checked){
-         ele.disabled = true;
-         ele.parentElement.classList.add(".disabled")}
-         else if(ele.checked){
-            element.checked = false
-            element.disabled = true;
-            element.parentElement.classList.add(".disabled")}
-            return true
-      }  else{
 
-         ele.disabled = false;
-         ele.parentElement.classList.remove(".disabled")
-      }
+         if (eleDate === triggerDate &&
+             ele !== triggerElement &&
+             triggerElement.checked ){
+
+            ele.disabled = true;
+            ele.parentElement.classList.add("disabled")
+
+         } else if (ele !== triggerElement &&
+               !triggerElement.checked &&
+               eleDate === triggerDate) {
+
+            ele.disabled = false;
+            ele.parentElement.classList.remove("disabled")
+
+         }
    }
+
 }
 
 
@@ -132,7 +140,7 @@ const ccOption = document.querySelector("div select option[value='credit-card']"
 ccOption.selected = true;
 
 
-//Payment Selection CC/Paypal/Bitcoin listner and handler
+//Payment Selection CC/Paypal/Bitcoin listener and handler
 const paymentSelection = document.getElementById("payment")
 paymentSelection.addEventListener("change", (e) =>{
 
