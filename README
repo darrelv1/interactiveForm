@@ -1,0 +1,5 @@
+Real-time error message: Is applied to both the Name and Email Address field. self-defined listener in line 274
+utilizes both the name and email validator in line 214 and 194 respectively.
+
+Conditional error message: Is applied to the Email field of two customs errors, one is the field being blank
+ and the other is not being formatting correctly. please refer to line 203-210

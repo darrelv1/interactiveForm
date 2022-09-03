@@ -11,11 +11,7 @@ const checkboxes = document.querySelectorAll("fieldset [type='checkbox']")
 const registerField =document.querySelector("fieldset.activities")
 let totalobj = document.getElementById("activities-cost")
 let total = 0;
-// Form Inputs
-const form = document.querySelector("form")
-const inputTxt = document.querySelectorAll("input ")
-const nameInput = document.querySelector('#name');
-const email = document.querySelector('#email');
+
 
 
 
@@ -179,7 +175,11 @@ paymentSelection.addEventListener("change", (e) =>{
 
 
 //Form Validation
-
+// Form Inputs
+const form = document.querySelector("form")
+const inputTxt = document.querySelectorAll("input ")
+const nameInput = document.querySelector('#name');
+const email = document.querySelector('#email');
 
 
 
