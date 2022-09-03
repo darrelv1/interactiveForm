@@ -1,11 +1,25 @@
 //Focus -> name input field
 //document.querySelector('input [type="text"]').focus()
+
+//The "other" option element in the Job Role drop down list
 const otherField = document.getElementById('other-job-role')
-otherField.style.display = "none";
 
 
+const namefield = document.querySelector('#name');
 const jobRoleDrop = document.querySelector("select[name='user-title']")
+const checkboxes = document.querySelectorAll("fieldset [type='checkbox']")
+const registerField =document.querySelector("fieldset.activities")
+let totalobj = document.getElementById("activities-cost")
+let total = 0;
+// Form Inputs
+const form = document.querySelector("form")
+const inputTxt = document.querySelectorAll("input ")
+const nameInput = document.querySelector('#name');
+const email = document.querySelector('#email');
 
+
+
+otherField.style.display = "none";
 
 //Handler Helper functions...
 
@@ -38,7 +52,13 @@ function parentDecorator(ele, handler){
 
 jobRoleDrop.addEventListener("change",  (Event) => {
    if(Event.currentTarget.value === "other"){
+
       otherField.style.display = "inline"
+
+   } else {
+
+      otherField.style.display = "none"
+
    }
 })
 //Color Selector
@@ -50,27 +70,27 @@ const designOption = document.querySelector("#design")
 
 //handler for the proper match of Design vs. Color
 function handleColorOpt (){
+   let first = true
    colorOption.disabled = false
    for (let ele of colorOption){
       const attr = ele.getAttribute("data-theme");
-      if (attr === designOption.value){
-         ele.removeAttribute("hidden")
+      if (attr === designOption.value ){
+         ele.removeAttribute("hidden");
+         if (first){
+            ele.selected = true;
+            first = false
+         }
       } else {
          // Revert back to main selection
-         colorOption.value = "Select a design theme above"
          ele.setAttribute("hidden", true)
+
       }
    }
    }
 
 designOption.addEventListener('change', handleColorOpt )
 
-const checkboxes = document.querySelectorAll("fieldset [type='checkbox']")
-const registerField =document.querySelector("fieldset.activities")
 
-
-let totalobj = document.getElementById("activities-cost")
-let total = 0;
 
 registerField.addEventListener( 'change', (e )=>{
 
@@ -80,11 +100,9 @@ registerField.addEventListener( 'change', (e )=>{
    sameTimeBlock(targetEle)
 
    if (e.target.checked){
-
       total += parseInt(targetEle.getAttribute("data-cost"))
 
    } else if(!e.target.checked){
-
       total -= parseInt(targetEle.getAttribute("data-cost"));
    }
    totalobj.innerHTML = `total $${total}`
@@ -103,17 +121,11 @@ const sameTimeBlock = (triggerElement) => {
       const eleDate = ele.getAttribute("data-day-and-time");
 
 
-         if (eleDate === triggerDate &&
-             ele !== triggerElement &&
-             triggerElement.checked ){
-
+         if (eleDate === triggerDate && ele !== triggerElement && triggerElement.checked ){
             ele.disabled = true;
             ele.parentElement.classList.add("disabled")
 
-         } else if (ele !== triggerElement &&
-               !triggerElement.checked &&
-               eleDate === triggerDate) {
-
+         } else if (ele !== triggerElement && !triggerElement.checked && eleDate === triggerDate) {
             ele.disabled = false;
             ele.parentElement.classList.remove("disabled")
 
@@ -142,6 +154,8 @@ ccOption.selected = true;
 
 //Payment Selection CC/Paypal/Bitcoin listener and handler
 const paymentSelection = document.getElementById("payment")
+
+
 paymentSelection.addEventListener("change", (e) =>{
 
 
@@ -165,12 +179,9 @@ paymentSelection.addEventListener("change", (e) =>{
 
 
 //Form Validation
-//List of Elements to validate
 
-const form = document.querySelector("form")
-const inputTxt = document.querySelectorAll("input ")
-const nameInput = document.querySelector('#name');
-const email = document.querySelector('#email');
+
+
 
 nameInput.focus()
 
@@ -182,29 +193,21 @@ const valid_name = (name) => {return name !== "" ? true : false}
 //Validates email input
 function emailValidator(emails){
 
-   const regEx = /^[^@]+@[^@]+\.[\w]+$/i
-   const result = regEx.test(emails.value)
-   const regEx2 = /^[ ]*$/
-   if (result) {
+   const regEx = /^[^@]+@[^@]+\.[\w]+$/i.test(emails.value)
+   const regEx2 = /^[ ]*$/.test(emails.value)
+
+   if (regEx) {
       validHandler(emails)
    } else {
-      //extra Credit
-      if(regEx2.test(emails.value) === true){
-         console.log(regEx2.test(emails.value))
-         emailDecorator(emails)
+      //Extra Credit
+      if(regEx2){
+         emails.nextSibling.nextSibling.textContent = "E-mail field cannot be left blank";
       } else {
          emails.nextSibling.nextSibling.textContent = "Email address must be formatted correctly"
-         errorHandler(emails)
       }
+      errorHandler(emails)
    }
-   return result
-}
-//extra Credit function facilates
-function emailDecorator (obj){
-   const parent = obj.parentElement;
-   //parent.lastElementChild.style.display = "none";
-   obj.nextSibling.nextSibling.textContent = "E-mail field cannot be left blank";
-   errorHandler(obj);
+   return regEx
 }
 
 //Validates name input
@@ -257,7 +260,7 @@ function creditValidator(){
 
       const answer = ccNum && zip && cvv;
 
-      if(answer){
+      if (answer) {
          return true
       } else {
          return false
@@ -275,7 +278,7 @@ function creditValidator(){
       }
  }
 
-const namefield = document.querySelector('#name');
+
 nameInput.addEventListener('input', createListener(nameValidator))
 email.addEventListener('keyup', createListener(emailValidator))
 
@@ -285,8 +288,12 @@ form.addEventListener("submit", (e) => {
    emailValidator(email)
    actRegValidator()
    creditValidator()
-   const result = nameValidator(nameInput) && emailValidator(email)&& actRegValidator() && creditValidator()
-   if (!result) {e.preventDefault(); console.log("Error")}
+
+   const result = nameValidator(nameInput) && emailValidator(email) && actRegValidator() && creditValidator()
+
+   if (!result) {
+      e.preventDefault();
+   }
 })
 
 //Custom Listener for blur
@@ -294,7 +301,6 @@ function createListener_focus() {
    return (e) => {
       const parent = e.target.parentElement
       parent.classList.add("focus");
-      console.log(parent)
    }
 }
 
@@ -303,7 +309,6 @@ function createListener_blur() {
    return (e) => {
       const parent = e.target.parentElement
       parent.classList.remove("focus");
-      console.log(parent)
    }
 }
 
@@ -321,7 +326,7 @@ focuser(checkboxes)
 //helper function to both errorhandler and validhandler
 function regexhandler (ele, regEx){
    const result = regEx.test(ele.value)
-   console.log("what we want to see")
+
    if (result){
       validHandler(ele)
    } else {
